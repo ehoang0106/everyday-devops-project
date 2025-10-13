@@ -2,7 +2,7 @@
 
 resource "aws_instance" "day1_devops_ec2" {
   ami = var.ami
-  instance_type = "t3.micro"
+  instance_type = "t3.small"
   subnet_id = data.aws_subnet.day1_devops_subnet.id
   vpc_security_group_ids = [data.aws_security_group.day1_devops_sg.id]
   associate_public_ip_address = true
