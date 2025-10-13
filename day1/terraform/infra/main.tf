@@ -12,7 +12,7 @@ resource "aws_instance" "day1_devops_ec2" {
     volume_type = "gp2"
     delete_on_termination = true
   }
-
+  key_name = "day1-devops-ec2-kp"
   #install SSM Agent
   user_data = <<-EOF
               #!/bin/bash
