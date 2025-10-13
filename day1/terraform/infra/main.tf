@@ -13,12 +13,10 @@ resource "aws_instance" "day1_devops_ec2" {
     delete_on_termination = true
   }
   key_name = "day1-devops-ec2-kp"
-  #install SSM Agent
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo snap install amazon-ssm-agent --classic
-              sudo snap start amazon-ssm-agent
-              EOF
+  
+  #install script.sh
+  user_data = base64encode(file("${path.module}/script.sh"))
+
 
   iam_instance_profile = "AllowAccessSessionManagerToSSHToEC2"
   tags = {
