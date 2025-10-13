@@ -4,7 +4,7 @@ resource "aws_vpc" "day1_devops_vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "day1-devops-vpc"
+    Name = "day1_devops_vpc"
   }
 }
 
