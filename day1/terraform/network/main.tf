@@ -22,7 +22,7 @@ resource "aws_subnet" "day1_devops_subnet" {
 #internet gateway
 
 resource "aws_internet_gateway" "day1_devops_igw" {
-  vpc_id = aws_vpc.day1.devops_vpc.id
+  vpc_id = aws_vpc.day1_devops_vpc.id
 
   tags = {
     Name = "day1_devops_igw"
