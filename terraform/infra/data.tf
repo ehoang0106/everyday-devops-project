@@ -1,20 +1,20 @@
-data "aws_vpc" "day1_devops_vpc" {
+data "aws_vpc" "devops_vpc" {
   filter {
     name   = "tag:Name"
-    values = ["day1_devops_vpc"]
+    values = ["devops_vpc"]
   }
 }
 
-data "aws_subnet" "day1_devops_subnet" {
+data "aws_subnet" "devops_subnet" {
   filter {
     name   = "tag:Name"
-    values = ["day1_devops_subnet"]
+    values = ["devops_subnet"]
   }
 }
 
-data "aws_security_group" "day1_devops_sg" {
+data "aws_security_group" "devops_sg" {
   filter {
     name   = "tag:Name"
-    values = ["day1_devops_sg"]
+    values = ["devops_sg"]
   }
 }

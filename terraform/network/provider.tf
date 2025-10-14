@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket = "terraform-state-khoa-hoang"
-    key    = "terraform_tfstate_day1_devops_ec2"
+    key    = "terraform_tfstate_devops_ec2"
     region = "us-west-1"
   }
 }
