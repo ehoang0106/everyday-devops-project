@@ -18,7 +18,7 @@ resource "aws_instance" "devops_ec2" {
   user_data = base64encode(file("${path.module}/script.sh"))
 
 
-  iam_instance_profile = "AllowAccessSessionManagerToSSHToEC2"
+  iam_instance_profile = "EC2-instance-nextwork-cicd"
   tags = {
     Name = "devops_ec2"
   }
