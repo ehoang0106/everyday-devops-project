@@ -2,4 +2,4 @@
 
 Create a VPC, EC2 for a web app
 
-Followed guide from nextwork.org
+[Followed guide from nextwork.org](https://learn.nextwork.org/projects/aws-devops-cicd?track=low)
