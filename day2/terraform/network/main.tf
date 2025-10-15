@@ -116,7 +116,7 @@ resource "aws_route" "vpc2_route" {
   gateway_id             = aws_internet_gateway.vpc2_igw.id
 }
 
-# VPC Peering Connection: vpc1 (requester) -> vpc2 (accepter)
+#vpc peering connection: vpc1 (requester) -> vpc2 (accepter)
 resource "aws_vpc_peering_connection" "vpc1_to_vpc2" {
   region = "us-east-1"
   peer_owner_id = var.peer_owner_id
@@ -160,3 +160,69 @@ resource "aws_route" "vpc2_to_vpc1_route" {
 }
 
 
+#security group of vpc1
+resource "aws_security_group" "vpc1_sg" {
+  region = "us-east-1"
+  name = "vpc1_sg"
+  description = "Allow ssh and all traffic from vpc2"
+  vpc_id = aws_vpc.vpc1.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.vpc2.cidr_block]
+    description = "Allow SSH from vpc2" 
+  }
+
+  #all icmp v4 traffic from vpc2 to test ping
+  ingress {
+    from_port = -1
+    to_port = -1
+    protocol = "icmp"
+    cidr_blocks = [aws_vpc.vpc2.cidr_block]
+    description = "Allow ICMP from vpc2"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
+  }
+}
+
+
+#security group of vpc2
+resource "aws_security_group" "vpc2_sg" {
+  region = "us-east-2"
+  name = "vpc2_sg"
+  description = "Allow ssh and all traffic from vpc1"
+  vpc_id = aws_vpc.vpc2.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.vpc1.cidr_block]
+    description = "Allow SSH from vpc1" 
+  }
+
+  #all icmp v4 traffic from vpc1 to test ping
+  ingress {
+    from_port = -1
+    to_port = -1
+    protocol = "icmp"
+    cidr_blocks = [aws_vpc.vpc1.cidr_block]
+    description = "Allow ICMP from vpc1"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
+  }
+}
