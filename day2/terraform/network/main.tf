@@ -171,7 +171,7 @@ resource "aws_security_group" "vpc1_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.vpc2.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
     description = "Allow SSH from vpc2" 
   }
 
@@ -191,6 +191,10 @@ resource "aws_security_group" "vpc1_sg" {
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow all outbound traffic"
   }
+
+  tags = {
+    Name = "vpc1_sg"
+  }
 }
 
 
@@ -205,7 +209,7 @@ resource "aws_security_group" "vpc2_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.vpc1.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
     description = "Allow SSH from vpc1" 
   }
 
@@ -224,5 +228,9 @@ resource "aws_security_group" "vpc2_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow all outbound traffic"
+  }
+
+  tags = {
+    Name = "vpc2_sg"
   }
 }
