@@ -69,6 +69,11 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+# add permission for lambda to invoke api gateway using "AmazonAPIGatewayInvokeFullAccess" policy
+resource "aws_iam_role_policy_attachment" "lambda_apigw_invoke" {
+  role       = aws_iam_role.lambda_dynamodb_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess"
+}
 
 
 
@@ -100,3 +105,34 @@ resource "aws_lambda_function" "website_visit_counter" {
   depends_on = [data.archive_file.lambda_zip]
 }
 
+#create a API with API Type HTTP API and add integration with lambda function
+#aws region of lambda is us-west-1 and the lambda function name is WebsiteVisitCounterFunction
+
+
+resource "aws_apigatewayv2_api" "http_api" {
+  name          = "WebsiteVisitCounterAPI"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_integration" "lambda_integration" {
+  api_id             = aws_apigatewayv2_api.http_api.id
+  integration_type   = "AWS_PROXY"
+  integration_uri    = aws_lambda_function.website_visit_counter.arn
+  integration_method = "POST"
+  payload_format_version = "2.0"
+}
+
+#config the route, method = GET, resource path = /count, and intergration target = WebsiteVisitCounterFunction
+
+resource "aws_apigatewayv2_route" "get_count_route" {
+  api_id    = aws_apigatewayv2_api.http_api.id
+  route_key = "GET /"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
+#state let defualt stage
+resource "aws_apigatewayv2_stage" "default_stage" {
+  api_id      = aws_apigatewayv2_api.http_api.id
+  name        = "$default"
+  auto_deploy = true
+}
