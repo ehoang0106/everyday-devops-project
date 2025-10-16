@@ -20,7 +20,6 @@ def lambda_handler(event, context):
             ReturnValues='UPDATED_NEW'
         )
         
-        visit_count = int(resp['Attributes']['VisitCount'])
 
         total_key = {'VisitID': 'TOTAL', 'VisitDate': 'TOTAL'}
         total_resp = table.update_item(
@@ -34,7 +33,7 @@ def lambda_handler(event, context):
         return {
             'statusCode': 200,
             'body': json.dumps({
-                'message': f'Visit count for {current_date} is now {visit_count}',
+                'statusCode': 200,
                 'total_visits': total_visit_count
             })
         }
