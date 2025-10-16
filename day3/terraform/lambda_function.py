@@ -1,9 +1,8 @@
-# lambda function to count number of visits of a webiste, the current date get from a dynamodb table, then increment the count and update the table
 import json
 import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime
-
+from boto3.dynamodb.conditions import Key
 
 def lambda_handler(event, context):
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -12,29 +11,36 @@ def lambda_handler(event, context):
     table = dynamodb.Table('WebsiteVisits')
 
     try:
+        #increment today's count
         date_key = {'VisitID': 'DATE', 'VisitDate': current_date}
-        resp = table.update_item(
+        table.update_item(
             Key=date_key,
             UpdateExpression='SET VisitCount = if_not_exists(VisitCount, :zero) + :inc',
             ExpressionAttributeValues={':zero': 0, ':inc': 1},
             ReturnValues='UPDATED_NEW'
         )
-        
 
-        total_key = {'VisitID': 'TOTAL', 'VisitDate': 'TOTAL'}
-        total_resp = table.update_item(
-            Key=total_key,
-            UpdateExpression='SET VisitCount = if_not_exists(VisitCount, :zero) + :inc',
-            ExpressionAttributeValues={':zero': 0, ':inc': 1},
-            ReturnValues='UPDATED_NEW'
+        #query all date entries and sum VisitCount to compute the true total
+        q = table.query(
+            KeyConditionExpression=Key('VisitID').eq('DATE'),
+            ProjectionExpression='VisitCount'
         )
-        total_visit_count = int(total_resp['Attributes']['VisitCount'])
+        items = q.get('Items', [])
+        total_sum = sum(int(item.get('VisitCount', 0)) for item in items)
+
+        #write the computed total into the TOTAL item
+        total_key = {'VisitID': 'TOTAL', 'VisitDate': 'TOTAL'}
+        table.update_item(
+            Key=total_key,
+            UpdateExpression='SET VisitCount = :total',
+            ExpressionAttributeValues={':total': total_sum}
+        )
 
         return {
             'statusCode': 200,
             'body': json.dumps({
                 'statusCode': 200,
-                'total_visits': total_visit_count
+                'total_visits': total_sum
             })
         }
 
