@@ -24,8 +24,11 @@ def lambda_handler(event, context):
         q = table.query(
             KeyConditionExpression=Key('VisitID').eq('DATE'),
             ProjectionExpression='VisitCount'
-        )
+        ) #q is a response dictionary
+    
+        #create a list of items from the query response    
         items = q.get('Items', [])
+        
         total_sum = 0
         for item in items:
             visit_count = item.get('VisitCount', 0)
