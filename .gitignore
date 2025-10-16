@@ -4,3 +4,4 @@
 *.tfstate
 *.pem
 *.tfstate.backup
+lambda_function.zip
