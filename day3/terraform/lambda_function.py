@@ -26,7 +26,10 @@ def lambda_handler(event, context):
             ProjectionExpression='VisitCount'
         )
         items = q.get('Items', [])
-        total_sum = sum(int(item.get('VisitCount', 0)) for item in items)
+        total_sum = 0
+        for item in items:
+            visit_count = item.get('VisitCount', 0)
+            total_sum += int(visit_count)
 
         #write the computed total into the TOTAL item
         total_key = {'VisitID': 'TOTAL', 'VisitDate': 'TOTAL'}
