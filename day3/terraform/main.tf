@@ -156,3 +156,37 @@ resource "aws_lambda_permission" "apigw_lambda" {
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
   depends_on = [aws_apigatewayv2_api.http_api, aws_lambda_function.website_visit_counter]
 }
+
+
+# custom domain for api
+
+resource "aws_apigatewayv2_domain_name" "custom_domain" {
+  domain_name = "count.khoah.net"
+  domain_name_configuration {
+    certificate_arn = "arn:aws:acm:us-west-1:706572850235:certificate/eac6e688-8e0c-4545-a122-d67d1d7bf04a"
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+
+}
+
+#mapping custom domain to api stage
+resource "aws_apigatewayv2_api_mapping" "custom_domain_mapping" {
+  api_id      = aws_apigatewayv2_api.http_api.id
+  domain_name = aws_apigatewayv2_domain_name.custom_domain.domain_name
+  stage       = aws_apigatewayv2_stage.default_stage.name
+}
+
+#route 53 record to point to the api gateway custom domain
+
+# resource "aws_route53_record" "api_gateway_record"{
+#   zone_id = "Z09372142GLGU75DMF3RP"
+#   name = "count.khoah.net"
+#   type = "A"
+#   alias {
+#     name                   = aws_apigatewayv2_domain_name.custom_domain.domain_name
+#     zone_id                = aws_apigatewayv2_domain_name.custom_domain.hosted_zone_id
+#     evaluate_target_health = true
+#   }
+# }
+
