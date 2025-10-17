@@ -20,7 +20,7 @@ def lambda_handler(event, context):
             ReturnValues='UPDATED_NEW'
         )
 
-        #query all date entries and sum VisitCount to compute the true total
+        #query all date entries and sum VisitCount to calculate the total visit
         q = table.query(
             KeyConditionExpression=Key('VisitID').eq('DATE'),
             ProjectionExpression='VisitCount'
