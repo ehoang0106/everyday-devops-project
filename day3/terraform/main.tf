@@ -103,6 +103,7 @@ resource "aws_lambda_function" "website_visit_counter" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.WebsiteVisits.name
+      API_SECRECT_TOKEN = var.API_SECRECT_TOKEN
     }
   }
   #wait for the zip file to be created
