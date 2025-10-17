@@ -19,11 +19,12 @@ resource "aws_dynamodb_table" "WebsiteVisits" {
 
 }
 
+
 #create a customer policy to allow lambda to access dynamodb table to scan, read, write, put, update
 
 resource "aws_iam_policy" "lambda_dynamodb_policy" {
   name = "allow_lambda_access_dynamodb"
-  description = "Policy to allow Lambda function to access DynamoDB table in any region and any account"
+  description = "Policy to allow Llambda function to access DynamoDB table in any region and any account"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -33,7 +34,7 @@ resource "aws_iam_policy" "lambda_dynamodb_policy" {
           "dynamodb:Query",
           "dynamodb:GetItem",
           "dynamodb:PutItem",
-          "dynamodb:UpdateItem"
+          "dynamodb:UpdateItem",
         ]
         Effect   = "Allow"
         Resource = "*"
@@ -41,6 +42,7 @@ resource "aws_iam_policy" "lambda_dynamodb_policy" {
     ]
   })
 }
+
 
 #create a role for lambda to assusme and attach the above policy to plus the AWSLambdaBasicExecutionRole
 
@@ -59,6 +61,8 @@ resource "aws_iam_role" "lambda_dynamodb_role" {
     ]
   })
 }
+
+
 
 resource "aws_iam_role_policy_attachment" "lambda_dynamodb_policy_attachment" {
   role       = aws_iam_role.lambda_dynamodb_role.name
@@ -120,6 +124,7 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
   integration_uri    = aws_lambda_function.website_visit_counter.arn
   integration_method = "POST"
   payload_format_version = "2.0"
+  depends_on = [ aws_lambda_function.website_visit_counter, aws_apigatewayv2_api.http_api ]
 }
 
 #config the route, method = GET, resource path = /count, and intergration target = WebsiteVisitCounterFunction
@@ -130,4 +135,24 @@ resource "aws_apigatewayv2_route" "get_count_route" {
   target    = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
+#state let defualt stage
+resource "aws_apigatewayv2_stage" "default_stage" {
+  api_id      = aws_apigatewayv2_api.http_api.id
+  name        = "$default"
+  auto_deploy = true
+}
 
+#give permission for api gateway to invoke the lambda function
+
+#for my blog later, this is the bummer, spent 5 hours to figure out that i need to add aws_lambda_permission to allow api gateway to invoke lambda function
+
+#https://registry.terraform.io/providers/hashicorp/aws/2.33.0/docs/guides/serverless-with-aws-lambda-and-api-gateway
+
+resource "aws_lambda_permission" "apigw_lambda" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.website_visit_counter.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
+  depends_on = [aws_apigatewayv2_api.http_api, aws_lambda_function.website_visit_counter]
+}
