@@ -177,16 +177,16 @@ resource "aws_apigatewayv2_api_mapping" "custom_domain_mapping" {
   stage       = aws_apigatewayv2_stage.default_stage.name
 }
 
-#route 53 record to point to the api gateway custom domain
+#route 53 to create a record to point to the api gateway custom domain
+resource "aws_route53_record" "api_gateway_record"{
+  zone_id = "Z09372142GLGU75DMF3RP"
+  name = "count.khoah.net"
+  type = "A"
 
-# resource "aws_route53_record" "api_gateway_record"{
-#   zone_id = "Z09372142GLGU75DMF3RP"
-#   name = "count.khoah.net"
-#   type = "A"
-#   alias {
-#     name                   = aws_apigatewayv2_domain_name.custom_domain.domain_name
-#     zone_id                = aws_apigatewayv2_domain_name.custom_domain.hosted_zone_id
-#     evaluate_target_health = true
-#   }
-# }
+  alias {
+    name                   = aws_apigatewayv2_domain_name.custom_domain.domain_name_configuration[0].target_domain_name
+    zone_id                = aws_apigatewayv2_domain_name.custom_domain.domain_name_configuration[0].hosted_zone_id
+    evaluate_target_health = true
+  }
+}
 
