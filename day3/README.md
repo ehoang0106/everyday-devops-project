@@ -5,3 +5,5 @@ Goal:
 - Using Terraform to spin up DynamoDB.
 - Levarage Lambda to write data to database
 - Ultilizing GitHub Action to build and publish the website with OIDC authenticate
+
+![architecture](./diagram.jpg)
