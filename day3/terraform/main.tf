@@ -96,7 +96,7 @@ resource "aws_lambda_function" "website_visit_counter" {
   function_name = "WebsiteVisitCounter"
   role          = aws_iam_role.lambda_dynamodb_role.arn
   handler       = "lambda_function.lambda_handler"
-  runtime       = "python3.9"
+  runtime       = "python3.12"
   filename      = "${path.module}/lambda_function.zip"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
