@@ -6,3 +6,4 @@
 *.tfstate.backup
 lambda_function.zip
 *.tfvars
+*secret*.yaml
