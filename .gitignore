@@ -7,3 +7,4 @@
 lambda_function.zip
 *.tfvars
 *secret*.yaml
+*.tfvars.example
