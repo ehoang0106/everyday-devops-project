@@ -31,3 +31,18 @@ resource "aws_lb_listener" "weather_app_listener" {
     target_group_arn = aws_lb_target_group.weather_app_target_group.arn
   }
 }
+
+#auto scaling group
+
+resource "aws_autoscaling_group" "weather_app_asg" {
+  name = "weather-app-asg"
+  min_size = 1
+  max_size = 1
+  desired_capacity = 1
+
+  vpc_zone_identifier = [for subnet in data.aws_subnets.weather_subnets.ids : subnet]
+  launch_template {
+    id = aws_launch_template.weather_app_launch_template.id
+    version = "$Latest"
+  }
+}
