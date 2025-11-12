@@ -14,7 +14,5 @@ High-level workflow
 1. Create a Dockerfile and build/test the container locally (nginx + app).
 2. Create an ECR repository and push the image.
 3. Write Terraform modules/resources for: VPC, subnets, ALB, security groups, IAM, ECR, ECS cluster, task definition, service, autoscaling.
-4. Configure Terraform backend (S3 + DynamoDB) and provider.
-5. terraform init/plan/apply to create infra and deploy the service.
-6. Validate via the ALB DNS (or Route53 record).
+4. Validate via the ALB DNS (or Route53 record).
 
