@@ -1,3 +1,18 @@
-## Build a infrastructure on AWS to host a simple weather app using nginx, manage by Terraform
+## Build infrastructure on AWS to deploy a containerized web app on ECS with Terraform
 
-To practice Terraform and nginx to host a simple weather app on AWS infrastructure.
+Containerize your existing web app (served by nginx) and use Terraform to provision AWS infrastructure and deploy it to Amazon ECS (Fargate).
+
+Goals
+- Containerize the app with Docker (nginx as needed) and push images to Amazon ECR.
+- Provision networking (VPC, subnets, IGW, route tables), ALB, ECS cluster, task definition, and service via Terraform.
+- Configure IAM roles, security groups, and autoscaling; expose the app through an ALB and output its DNS name.
+- Use a remote Terraform backend S3 for state and locking.
+
+High-level workflow
+1. Create a Dockerfile and build/test the container locally (nginx + app).
+2. Create an ECR repository and push the image.
+3. Write Terraform modules/resources for: VPC, subnets, ALB, security groups, IAM, ECR, ECS cluster, task definition, service, autoscaling.
+4. Configure Terraform backend (S3 + DynamoDB) and provider.
+5. terraform init/plan/apply to create infra and deploy the service.
+6. Validate via the ALB DNS (or Route53 record).
+
