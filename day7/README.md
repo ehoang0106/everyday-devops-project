@@ -1,6 +1,8 @@
 ## Build infrastructure on AWS to deploy a containerized web app on ECS with Terraform
 
-Containerize your existing web app (served by nginx) and use Terraform to provision AWS infrastructure and deploy it to Amazon ECS (Fargate).
+To refresh my knowledge of Terraform and AWS ECS, this project focuses on Amazon ECS deployment using EC2 with Terraform.
+
+Containerize a simple weather web app (served by nginx)
 
 Goals
 - Containerize the app with Docker (nginx as needed) and push images to Amazon ECR.
