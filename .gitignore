@@ -8,3 +8,4 @@ lambda_function.zip
 *.tfvars
 *secret*.yaml
 *.tfvars.example
+.terraform.tfstate.lock.info
