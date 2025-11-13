@@ -18,3 +18,7 @@ data "aws_subnets" "weather_subnets" {
     values = [data.aws_vpc.weather_vpc.id]
   }
 }
+
+data "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecsTaskExecutionRole"
+}
